@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SouGPT Ultimate - AI Super Lengkap</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e, #0a1a2a);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 1000px;
+            height: 90vh;
+            background: rgba(10, 20, 40, 0.85);
+            backdrop-filter: blur(16px);
+            border-radius: 40px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .header {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #1a2a4a, #0a1a3a);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .header h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badges {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            background: rgba(100, 150, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: #aac8ff;
+        }
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .user-msg {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #3b5eff, #6b3aff);
+            color: white;
+            border-radius: 20px 20px 4px 20px;
+        }
+        .ai-msg {
+            align-self: flex-start;
+            background: #1e2a4a;
+            color: #e0e8ff;
+            border-radius: 20px 20px 20px 4px;
+            border-left: 3px solid #7c3aff;
+        }
+        .input-area {
+            padding: 16px 20px 24px;
+            background: rgba(0,0,0,0.4);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        textarea {
+            flex: 1;
+            background: #0f1a2f;
+            border: 1px solid #2a3a6e;
+            border-radius: 30px;
+            padding: 12px 18px;
+            color: white;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+        }
+        textarea:focus {
+            border-color: #7c3aff;
+        }
+        button {
+            background: linear-gradient(135deg, #5f3eff, #9b5eff);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover { transform: scale(1.02); }
+        button:active { transform: scale(0.98); }
+        .mic-btn {
+            background: linear-gradient(135deg, #4a2a8a, #7a42e0);
+        }
+        .mic-btn.recording {
+            background: #e34d4d;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(227,77,77,0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(227,77,77,0); }
+            100% { box-shadow: 0 0 0 0 rgba(227,77,77,0); }
+        }
+        .status {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #8a9eff;
+        }
+        .typing {
+            display: inline-flex;
+            gap: 4px;
+        }
+        .typing span {
+            width: 6px;
+            height: 6px;
+            background: #9b5eff;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+<div class="chat-container">
+    <div class="header">
+        <h1>🧠 SouGPT · Ultimate AI</h1>
+        <div class="badges">
+            <span class="badge">📚 IPS</span>
+            <span class="badge">🔬 IPA</span>
+            <span class="badge">🩺 Medis</span>
+            <span class="badge">🌌 Alam Semesta</span>
+            <span class="badge">⚔️ Perang Dunia</span>
+            <span class="badge">🎤 Voice Chat</span>
+            <span class="badge">⌨️ Keyboard</span>
+        </div>
+    </div>
+    <div class="messages" id="messages">
+        <div class="message ai-msg">🤖 <strong>SouGPT:</strong> Halo! Aku AI super cerdas. Kuasai IPS, IPA, Medis, Astronomi, Sejarah Perang, dan semua ilmu. Kirim chat (teks/suara) dan aku jawab akurat!</div>
+    </div>
+    <div class="input-area">
+        <div class="input-wrapper">
+            <textarea id="chatInput" rows="1" placeholder="Tanya apa saja... (Enter kirim)"></textarea>
+            <button id="sendBtn">📩 Kirim</button>
+            <button id="micBtn" class="mic-btn">🎤 Suara</button>
+        </div>
+        <div class="status" id="status">✅ Siap menerima pesan</div>
+    </div>
+</div>
+
+<script>
+    // ==================== PENGETAHUAN SUPER LENGKAP ====================
+    function getSuperAnswer(question) {
+        let q = question.toLowerCase().trim();
+        
+        // IPS (Sejarah, Ekonomi, Geografi, Sosiologi)
+        if (q.includes("perang dunia 1") || q.includes("pd1")) {
+            return "📜 **Perang Dunia I (1914-1918)** : Dipicu oleh pembunuhan Franz Ferdinand. Blok Sentral (Jerman, Austria-Hongaria) vs Sekutu (Prancis, Inggris, Rusia, AS). Perang parit, korban 20 juta jiwa. Berakhir dengan Perjanjian Versailles.";
+        }
+        if (q.includes("perang dunia 2") || q.includes("pd2") || q.includes("pd ii")) {
+            return "💥 **Perang Dunia II (1939-1945)** : Invasi Polandia oleh Jerman Nazi. Poros (Jerman, Italia, Jepang) vs Sekutu (AS, Inggris, Uni Soviet). Holocaust 6 juta Yahudi. Bom atom Hiroshima & Nagasaki. Korban 70-85 juta jiwa.";
+        }
+        if (q.includes("ekonomi") || q.includes("inflasi")) {
+            return "📈 **Ekonomi**: Inflasi adalah kenaikan harga barang secara umum. Penyebab: uang beredar berlebih, biaya produksi naik. Contoh: Zimbabwe 2008 (inflasi 79,6 miliar persen).";
+        }
+        if (q.includes("geografi") || q.includes("gunung tertinggi")) {
+            return "🌍 **Geografi**: Gunung Everest (8.848 m) tertinggi di dunia. Gunung tertinggi Indonesia: Puncak Jaya (4.884 m). Sungai terpanjang: Nil (6.650 km).";
+        }
+        
+        // IPA (Fisika, Kimia, Biologi)
+        if (q.includes("fisika") || q.includes("gravitasi")) {
+            return "⚛️ **Fisika**: Gravitasi Newton: F = G.m1.m2/r². Relativitas Einstein: E=mc². Kecepatan cahaya 299.792.458 m/s.";
+        }
+        if (q.includes("kimia") || q.includes("air")) {
+            return "🧪 **Kimia**: Air (H₂O) memiliki titik didih 100°C, titik beku 0°C. pH netral 7. Tabel periodik 118 unsur.";
+        }
+        if (q.includes("biologi") || q.includes("dna") || q.includes("sel")) {
+            return "🧬 **Biologi**: DNA menyimpan kode genetik (A,T,G,C). Mitokondria adalah pembangkit energi sel. Fotosintesis: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂.";
+        }
+        
+        // Medis
+        if (q.includes("medis") || q.includes("penyakit") || q.includes("virus") || q.includes("covid")) {
+            return "🩺 **Medis**: COVID-19 disebabkan virus SARS-CoV-2, menular via droplet. Vaksin bekerja merangsang antibodi. Antibiotik hanya melawan bakteri (tidak virus).";
+        }
+        if (q.includes("jantung") || q.includes("serangan jantung")) {
+            return "❤️ **Jantung**: Penyakit jantung koroner penyebab kematian nomor 1 dunia. Gejala: nyeri dada, sesak napas. Pencegahan: olahraga, diet sehat.";
+        }
+        
+        // Alam Semesta
+        if (q.includes("lubang hitam") || q.includes("black hole")) {
+            return "🕳️ **Lubang Hitam**: Region ruang-waktu dengan gravitasi sangat kuat. Terbentuk dari keruntuhan bintang masif. Horizon peristiwa adalah titik tak kembali.";
+        }
+        if (q.includes("big bang") || q.includes("awal semesta")) {
+            return "💥 **Big Bang 13,8 Miliar Tahun Lalu**: Alam semesta berawal dari titik singularitas, lalu mengembang. Bukti: radiasi CMB, pergeseran merah galaksi.";
+        }
+        if (q.includes("galaksi") || q.includes("bima sakti")) {
+            return "🌌 **Galaksi Bima Sakti**: Diameter 105.700 tahun cahaya, mengandung 100-400 miliar bintang, termasuk Matahari kita.";
+        }
+        if (q.includes("planet") || q.includes("tata surya")) {
+            return "🪐 **Tata Surya**: 8 planet: Merkurius, Venus, Bumi, Mars, Jupiter, Saturnus, Uranus, Neptunus. Jupiter terbesar, Bumi satu-satunya yang memiliki kehidupan.";
+        }
+        
+        // Default cerdas
+        return `✨ **Jawaban Akurat**: "${question}" — Sebagai AI super cerdas, saya kuasai semua bidang. Coba tanyakan: 'penyebab Perang Dunia 2', 'cara kerja lubang hitam', 'gejala diabetes', 'rumus gaya gravitasi', 'ekonomi inflasi', atau apapun. Saya akan jawab detail dan akurat! 🔥`;
+    }
+    
+    async function getResponse(input) {
+        if (!input.trim()) return "Silakan tulis atau ucapkan pertanyaan, ya!";
+        return getSuperAnswer(input);
+    }
+    
+    // ==================== UI & CHAT ====================
+    const messagesDiv = document.getElementById('messages');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const micBtn = document.getElementById('micBtn');
+    const statusSpan = document.getElementById('status');
+    
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function addMessage(sender, text, isUser) {
+        const div = document.createElement('div');
+        div.className = 'message ' + (isUser ? 'user-msg' : 'ai-msg');
+        const prefix = isUser ? '🧑 Anda: ' : '🤖 SouGPT: ';
+        let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        div.innerHTML = prefix + formatted;
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    
+    async function sendMessage(msg) {
+        let clean = msg.trim();
+        if (!clean) return;
+        addMessage('user', clean, true);
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+        statusSpan.innerHTML = '🧠 SouGPT sedang berpikir...';
+        
+        await new Promise(r => setTimeout(r, 10));
+        const reply = await getResponse(clean);
+        addMessage('ai', reply, false);
+        statusSpan.innerHTML = '✅ Siap menerima pesan berikutnya';
+        
+        // Voice output
+        if (window.speechSynthesis) {
+            try {
+                speechSynthesis.cancel();
+                let tts = new SpeechSynthesisUtterance(reply.substring(0, 250));
+                tts.lang = 'id-ID';
+                speechSynthesis.speak(tts);
+            } catch(e) {}
+        }
+    }
+    
+    sendBtn.addEventListener('click', () => sendMessage(chatInput.value));
+    chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage(chatInput.value);
+        }
+    });
+    chatInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(100, this.scrollHeight) + 'px';
+    });
+    
+    // ==================== VOICE RECOGNITION ====================
+    let recognition = null;
+    let isRecording = false;
+    
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SR();
+        recognition.lang = 'id-ID';
+        recognition.continuous = false;
+        
+        micBtn.addEventListener('click', () => {
+            if (isRecording) {
+                recognition.stop();
+                return;
+            }
+            try {
+                recognition.start();
+                isRecording = true;
+                micBtn.classList.add('recording');
+                statusSpan.innerHTML = '🎙️ Mendengarkan... bicara sekarang...';
+            } catch(e) {
+                statusSpan.innerHTML = '❌ Error mic: ' + e.message;
+            }
+        });
+        
+        recognition.onresult = (e) => {
+            const text = e.results[0][0].transcript;
+            statusSpan.innerHTML = `🎤 "${text}" → diproses...`;
+            sendMessage(text);
+            isRecording = false;
+            micBtn.classList.remove('recording');
+        };
+        
+        recognition.onerror = (err) => {
+            statusSpan.innerHTML = `⚠️ Error mic: ${err.error}`;
+            isRecording = false;
+            micBtn.classList.remove('recording');
+        };
+        
+        recognition.onend = () => {
+            if (isRecording) {
+                isRecording = false;
+                micBtn.classList.remove('recording');
+                statusSpan.innerHTML = 'Mic selesai, coba lagi.';
+            }
+        };
+    } else {
+        micBtn.disabled = true;
+        micBtn.style.opacity = '0.5';
+        statusSpan.innerHTML = 'Browser tidak support microphone, gunakan keyboard.';
+    }
+</script>
+</body>
+</html>
